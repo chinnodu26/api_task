@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
       ),
-      home: const MyHomePage(title: 'Eatance Grocery'),
+      home: const MyHomePage(),
     );
   }
 }
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "api_demo",
+          "Eatance Grocery",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -282,7 +282,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 350,
                   height: 75,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
+                    //color: Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(12),
+
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          Color.fromARGB(255, 126, 238, 216),
+                          Color.fromARGB(255, 235, 240, 192)
+                        ]),
                     boxShadow: [
                       BoxShadow(
                           // color: Colors.black54,

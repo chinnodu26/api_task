@@ -40,8 +40,8 @@ class _addFileState extends State<addFile> {
     });
   }
 
-  final categoryIdController = TextEditingController();
-  final categoryNameController = TextEditingController();
+  final category_nameController = TextEditingController();
+
   bool _isHidden = true;
 
   //final imageController = TextEditingController();
@@ -50,13 +50,10 @@ class _addFileState extends State<addFile> {
 
   GetPost? getpost_model;
   void formLogin() async {
-    String categoryId = categoryIdController.text.trim();
-    String categoryName = categoryNameController.text.trim();
-    //String image = imageController.text.trim();
+    String category_name = category_nameController.text.trim();
 
     FormData formData = FormData.fromMap({
-      "categoryId": categoryId,
-      "categoryName": categoryName,
+      "category_name": category_name,
       "image": MultipartFile.fromBytes(
         await insidePic!.readAsBytes(),
         filename: insidePic?.name,
@@ -118,39 +115,7 @@ class _addFileState extends State<addFile> {
                         width: 336,
                         height: 60,
                         child: TextFormField(
-                          controller: categoryIdController,
-                          decoration: InputDecoration(
-                            labelStyle: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xff6C7178)),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color(0xff262632), width: 1.0)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "Item Discription",
-                        style: GoogleFonts.inter(
-                          decoration: TextDecoration.none,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xff000000),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      SizedBox(
-                        width: 336,
-                        height: 60,
-                        child: TextFormField(
-                          controller: categoryNameController,
+                          controller: category_nameController,
                           decoration: InputDecoration(
                             labelStyle: TextStyle(
                                 fontSize: 18,
