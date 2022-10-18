@@ -1,4 +1,13 @@
+import 'dart:convert';
+
+import 'package:api_task/models/getPost_api.dart';
+import 'package:api_task/widgets/gridview.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:api_task/models/getPost_api.dart';
+import 'package:api_task/widgets/starwidget.dart';
+import 'package:api_task/post.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,22 +31,45 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  GetPost? getpost_model;
+  bool loader = false;
+  void GetData() async {
+    try {
+      var responce = await Dio().get(
+        "http://jayanthi10.pythonanywhere.com/api/v1/list_category/",
+      );
+      setState(() {
+        getpost_model = getPostFromJson(jsonEncode(responce.data));
+        print("${responce.data}");
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    loader = true;
+    // TODO: implement initState
+    GetData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          widget.title,
+          "api_demo",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -66,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Stack(
                 children: <Widget>[
                   Image.network(
-                    'https://cdn.pixabay.com/photo/2018/07/11/21/51/toast-3532016_1280.jpg',
+                    'http://jayanthi10.pythonanywhere.com${getpost_model!.image}',
                     height: 250,
                     // width: double.infinity,
                     //fit: BoxFit.cover,
@@ -78,15 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       // alignment: Alignment.center,
                       child: Positioned(
                     top: 80,
-                    left: 20,
+                    left: 0.0,
                     right: 0,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '10 text ',
+                          '${getpost_model!.discount}',
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 30.0),
                         ),
@@ -94,9 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           height: 5,
                         ),
                         Text(
-                          ' text ',
+                          ' ${getpost_model!.name} ',
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 22.0),
                         ),
@@ -104,19 +136,20 @@ class _MyHomePageState extends State<MyHomePage> {
                           height: 8,
                         ),
                         Container(
-                          height: 30,
+                          height: 50,
                           width: 150,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Colors.white,
+                            color: Colors.redAccent,
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'text',
+                                //' ${getpost_model!.name} ',
+                                'container',
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 22.0),
                               ),
@@ -157,15 +190,17 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(
                               width: 15,
                             ),
-                            Text(
-                              'Address',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0),
-                            ),
+                            getpost_model == null
+                                ? CircularProgressIndicator()
+                                : Text(
+                                    '${getpost_model!.address}',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0),
+                                  ),
                             SizedBox(
-                              width: 150,
+                              width: 20,
                             ),
                             Icon(
                               Icons.call,
@@ -226,10 +261,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               color: Colors.lightGreen,
                             ),
                             SizedBox(
-                              width: 10,
+                              width: 15,
                             ),
                             Text(
-                              '1:00 AM - 9:00 PM',
+                              '${getpost_model!.timing}',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -265,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Text',
+                              'Standard Delivary',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -275,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               height: 10,
                             ),
                             Text(
-                              'Text',
+                              '${getpost_model!.timing}',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -283,9 +318,95 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ],
                         ),
+                        SizedBox(
+                          width: 150,
+                        ),
+                        Text(
+                          '|',
+                          style: TextStyle(
+                              color: Colors.black87,
+                              //fontWeight: FontWeight.w700,
+                              fontSize: 60.0),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Icon(
+                          Icons.electric_moped,
+                          color: Colors.black,
+                          size: 35,
+                        ),
                       ],
                     ),
                   )),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                margin: new EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {},
+                        child: Text("Shop by category ",
+                            style: GoogleFonts.inter(
+                                decoration: TextDecoration.none,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xff121212))),
+                      ),
+                      InkWell(
+                        child: Text("Add file",
+                            style: GoogleFonts.inter(
+                                decoration: TextDecoration.none,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xff121212))),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return addFile();
+                          }));
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  getpost_model == null
+                      ? CircularProgressIndicator()
+                      : Container(
+                          height: 200,
+                          child: GridView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: getpost_model!.data!.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              childAspectRatio: 5 / 6,
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 5.0,
+                              mainAxisSpacing: 8.0,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              return InkWell(
+                                child: gridView(
+                                  categoryId:
+                                      '${getpost_model!.data![index].categoryId}',
+                                  categoryName:
+                                      '${getpost_model!.data![index].categoryName}',
+                                  categoryImage:
+                                      'http://jayanthi10.pythonanywhere.com${getpost_model!.data![index].categoryImage}',
+                                ),
+                                onTap: () {},
+                              );
+                            },
+                          ),
+                        ),
+                ]),
+              ),
             ]),
           ],
         ),
